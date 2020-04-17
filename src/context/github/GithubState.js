@@ -38,11 +38,48 @@ const GithubState = (props) => {
     // setLoading(false);
   };
 
-  //get user
+  // Get singke Github user
+  const getUser = async (username) => {
+    setLoading();
+    const res = await axios.get(
+      `https://api.github.com/users/${username}?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET_KEY}`
+    );
 
-  // get repos
+    dispatch({ type: GET_USER, payload: res.data });
+    //using hooks
+    // setUser(res.data);
+    // setLoading(false);
 
-  // clear users
+    // this.setState({ user: res.data, loading: false });
+    // console.log(res.data);
+  };
+
+  //get user repos
+
+  const getUserRepos = async (username) => {
+    setLoading();
+    const res = await axios.get(
+      `https://api.github.com/users/${username}/repos?per_page=15&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET_KEY}`
+    );
+    dispatch({
+      type: GET_REPOS,
+      payload: res.data,
+    });
+
+    // setRepos(res.data);
+    // setLoading(false);
+    // this.setState({ repos: res.data, loading: false });
+    // console.log(res.data);
+  };
+
+  // clear users from state
+  const clearUsers = () => {
+    dispatch({ type: CLEAR_USERS });
+    // this.setState({
+    //   users: [],
+    //   loading: false,
+    // });
+  };
 
   //set loading
   const setLoading = () => {
@@ -58,6 +95,9 @@ const GithubState = (props) => {
         user: state.user,
         loading: state.loading,
         searchUsers,
+        clearUsers,
+        getUser,
+        getUserRepos,
       }}
     >
       {props.children}
